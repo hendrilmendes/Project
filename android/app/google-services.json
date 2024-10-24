@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "502227256729",
+    "project_id": "servicos-fb71e",
+    "storage_bucket": "servicos-fb71e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502227256729:android:60eddbc6ed8a8e949bff08",
+        "android_client_info": {
+          "package_name": "com.github.hendrilmendes.servicos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSKmXgT6tttL3LP3d_FNeNeOEWHOpyuA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
