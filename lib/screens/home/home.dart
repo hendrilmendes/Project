@@ -34,37 +34,37 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Função para carregar os serviços públicos do Firestore
-void _loadPublicServices() async {
-  final services = await _firestore.collection('public_services').get();
-  setState(() {
-    _markers.clear();
-    _allMarkers.clear();
-    for (var service in services.docs) {
-      final marker = Marker(
-        markerId: MarkerId(service.id),
-        position: LatLng(service['latitude'], service['longitude']),
-        infoWindow: InfoWindow(
-          title: service['name'],
-          snippet: service['description'],
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) => ServiceDetailsDialog(
-                name: service['name'],
-                contact: service['contact'],
-                hours: service['hours'],
-                description: service['description'],
-              ),
-            );
-          },
-        ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-      );
-      _markers.add(marker);
-      _allMarkers.add(marker);
-    }
-  });
-}
+  void _loadPublicServices() async {
+    final services = await _firestore.collection('public_services').get();
+    setState(() {
+      _markers.clear();
+      _allMarkers.clear();
+      for (var service in services.docs) {
+        final marker = Marker(
+          markerId: MarkerId(service.id),
+          position: LatLng(service['latitude'], service['longitude']),
+          infoWindow: InfoWindow(
+            title: service['name'],
+            snippet: service['description'],
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => ServiceDetailsDialog(
+                  name: service['name'],
+                  contact: service['contact'],
+                  hours: service['hours'],
+                  description: service['description'],
+                ),
+              );
+            },
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        );
+        _markers.add(marker);
+        _allMarkers.add(marker);
+      }
+    });
+  }
 
   void _filterMarkers() {
     setState(() {
@@ -143,75 +143,77 @@ void _loadPublicServices() async {
             onMapCreated: (controller) {
               mapController = controller;
             },
-            mapType: MapType.hybrid,
+            mapType: MapType.satellite,
             zoomControlsEnabled: false,
             initialCameraPosition: CameraPosition(
               target: LatLng(-15.3391487, -58.8738707),
-              zoom: 15.0,
+              zoom: 14.6,
             ),
             markers: _markers,
           ),
           // Widget da barra de pesquisa
           SafeArea(
-            child: SearchBarCustom(
-              onSearch: (value) {
-                _searchQuery = value;
-                _filterMarkers();
-              },
-            ),
-          ),
-          // Sugestões de pesquisa
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: _searchQuery.isNotEmpty
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).canvasColor,
-                      borderRadius: BorderRadius.circular(10.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4.0,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    constraints: BoxConstraints(
-                      maxHeight:
-                          200.0, // Limite de altura para a lista de sugestões
-                    ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics:
-                          AlwaysScrollableScrollPhysics(), // Habilita a rolagem do ListView
-                      itemCount: _allMarkers.length,
-                      itemBuilder: (context, index) {
-                        final serviceName =
-                            _allMarkers[index].infoWindow.title ?? "";
-                        if (serviceName
-                            .toLowerCase()
-                            .contains(_searchQuery.toLowerCase())) {
-                          return ListTile(
-                            title: Text(serviceName),
-                            onTap: () {
-                              // Navegar até o marcador no mapa
-                              mapController?.animateCamera(
-                                CameraUpdate.newLatLng(
-                                    _allMarkers[index].position),
-                              );
-                              // Limpar a pesquisa após tocar na sugestão
-                              setState(() {
-                                _searchQuery = "";
-                              });
+            child: Column(
+              children: [
+                SearchBarCustom(
+                  onSearch: (value) {
+                    _searchQuery = value;
+                    _filterMarkers();
+                  },
+                ),
+                // Sugestões de pesquisa
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: _searchQuery.isNotEmpty
+                      ? Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).canvasColor,
+                            borderRadius: BorderRadius.circular(10.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 4.0,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          constraints: BoxConstraints(
+                            maxHeight: 200.0,
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemCount: _allMarkers.length,
+                            itemBuilder: (context, index) {
+                              final serviceName =
+                                  _allMarkers[index].infoWindow.title ?? "";
+                              final serviceDescription =
+                                  _allMarkers[index].infoWindow.snippet ?? "";
+                              if (serviceName
+                                  .toLowerCase()
+                                  .contains(_searchQuery.toLowerCase())) {
+                                return ListTile(
+                                  title: Text(serviceName),
+                                  subtitle: Text(serviceDescription),
+                                  onTap: () {
+                                    mapController?.animateCamera(
+                                      CameraUpdate.newLatLng(
+                                          _allMarkers[index].position),
+                                    );
+                                    setState(() {
+                                      _searchQuery = "";
+                                    });
+                                  },
+                                );
+                              }
+                              return SizedBox.shrink();
                             },
-                          );
-                        }
-                        return SizedBox
-                            .shrink(); // Retorna um espaço vazio se não corresponder
-                      },
-                    ),
-                  )
-                : SizedBox.shrink(), // Não exibe nada se não houver consulta
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                ),
+              ],
+            ),
           ),
           // Widget de temperatura flutuante
           TemperatureWidget(temperature: _currentTemperature),

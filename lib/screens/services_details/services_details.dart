@@ -16,12 +16,15 @@ class ServiceDetailsDialog extends StatelessWidget {
   });
 
   // Função para abrir o discador com o número de telefone
-  void _launchCaller(String contact) async {
+  void _launchCaller(String contact, BuildContext context) async {
     final Uri phoneUri = Uri(scheme: 'tel', path: contact);
     if (await canLaunchUrl(phoneUri)) {
       await launchUrl(phoneUri);
     } else {
-      throw 'Não foi possível realizar a ligação para $contact';
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Não foi possível realizar a ligação para $contact')),
+      );
     }
   }
 
@@ -53,10 +56,10 @@ class ServiceDetailsDialog extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 4),
             InkWell(
-              onTap: () => _launchCaller(contact),
+              onTap: () => _launchCaller(contact, context),
               child: Row(
                 children: [
-                  Icon(Icons.phone, color: Colors.green),
+                  Icon(Icons.phone, color: Colors.green, semanticLabel: 'Número de telefone'),
                   SizedBox(width: 8),
                   Text(contact,
                       style: TextStyle(fontSize: 18, color: Colors.blue)),
@@ -68,7 +71,7 @@ class ServiceDetailsDialog extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
             Text(
-              hours, // Exibe a string de horário diretamente
+              hours,
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),

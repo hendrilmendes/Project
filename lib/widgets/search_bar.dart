@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 
-class SearchBarCustom extends StatelessWidget {
+class SearchBarCustom extends StatefulWidget {
   final Function(String) onSearch;
-  
+
   const SearchBarCustom({super.key, required this.onSearch});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _SearchBarCustomState createState() => _SearchBarCustomState();
+}
+
+class _SearchBarCustomState extends State<SearchBarCustom> {
+  final TextEditingController _searchController = TextEditingController();
+
+  void _clearSearch() {
+    _searchController.clear();
+    widget.onSearch(''); 
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +46,29 @@ class SearchBarCustom extends StatelessWidget {
             ),
             Expanded(
               child: TextField(
-                onChanged: onSearch,
+                controller: _searchController,
+                onChanged: (value) {
+                  widget.onSearch(
+                      value); 
+                  setState(
+                      () {});
+                },
                 decoration: InputDecoration(
                   hintText: 'Pesquisar...',
+                  hintStyle: TextStyle(color: Colors.grey[600]),
                   border: InputBorder.none,
                   contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 ),
+                style: TextStyle(fontSize: 16),
+                cursorColor: Theme.of(context).primaryColor,
               ),
             ),
+            if (_searchController.text.isNotEmpty)
+              IconButton(
+                icon: Icon(Icons.clear, color: Colors.grey),
+                onPressed: _clearSearch,
+              ),
           ],
         ),
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:servicos/screens/home/home.dart';
-import 'package:servicos/screens/report/report.dart';
+import 'package:servicos/screens/wellness/wellness.dart';
 
 class BottomNavigationContainer extends StatefulWidget {
   const BottomNavigationContainer({super.key});
@@ -17,7 +17,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 
   final List<Widget> screens = [
     HomePage(),
-    ReportPage(),
+    WellnessRecommendationsScreen(),
   ];
 
   void onTabTapped(int index) {
@@ -67,8 +67,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
               label: "Home",
             ),
             NavigationDestination(
-              icon: Icon(Icons.warning_rounded),
-              label: "Denúncias",
+              icon: Icon(Icons.spa),
+              label: "Bem-Estar",
             ),
           ],
         ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -29,19 +28,16 @@ class _ReportPageState extends State<ReportPage> {
 
   Future<void> _submitReport() async {
     if (_image != null && _descriptionController.text.isNotEmpty) {
-      // Upload da imagem para o Firebase Storage
       final storageRef = _storage.ref().child('reports/${_image!.name}');
       await storageRef.putFile(File(_image!.path));
       final imageUrl = await storageRef.getDownloadURL();
 
-      // Salvar a denúncia no Firestore
       await _firestore.collection('reports').add({
         'description': _descriptionController.text,
         'imageUrl': imageUrl,
         'timestamp': Timestamp.now(),
       });
 
-      // Limpar os campos após o envio
       setState(() {
         _descriptionController.clear();
         _image = null;
@@ -65,23 +61,47 @@ class _ReportPageState extends State<ReportPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'Descreva a situação:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
             TextField(
               controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Descrição'),
+              maxLines: 4,
+              decoration: InputDecoration(
+                labelText: 'Descrição',
+                border: OutlineInputBorder(),
+                hintText: 'Exemplo: Há um buraco na rua...',
+              ),
             ),
             SizedBox(height: 20),
             _image != null
-                ? Image.file(File(_image!.path), height: 200)
-                : Text('Nenhuma imagem selecionada'),
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Tirar Foto'),
+                ? Center(
+                  child: Column(
+                      children: [
+                        Image.file(File(_image!.path), height: 200),
+                        SizedBox(height: 10),
+                      ],
+                    ),
+                )
+                : Text('Nenhuma imagem selecionada',
+                    style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 10),
+            Center(
+              child: ElevatedButton(
+                onPressed: _pickImage,
+                child: Text('Tirar Foto'),
+              ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _submitReport,
-              child: Text('Enviar Denúncia'),
+            Center(
+              child: ElevatedButton(
+                onPressed: _submitReport,
+                child: Text('Enviar Denúncia'),
+              ),
             ),
           ],
         ),

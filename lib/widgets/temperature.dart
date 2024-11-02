@@ -62,13 +62,15 @@ class TemperatureWidget extends StatelessWidget {
     Icon icon;
 
     if (temperature > 30) {
-      message = 'Temperatura alta! Beba bastante água e evite exposição prolongada ao sol.';
+      message =
+          'Temperatura alta! Beba bastante água e evite exposição prolongada ao sol.';
       icon = Icon(Icons.wb_sunny, color: Colors.orange, size: 48);
     } else if (temperature < 10) {
       message = 'Temperatura baixa! Vista-se bem e mantenha-se aquecido.';
       icon = Icon(Icons.ac_unit, color: Colors.lightBlue, size: 48);
     } else {
-      message = 'Temperatura agradável! Aproveite o dia, mas sempre mantenha-se hidratado.';
+      message =
+          'Temperatura agradável! Aproveite o dia, mas sempre mantenha-se hidratado.';
       icon = Icon(Icons.cloud, color: Colors.blueGrey, size: 48);
     }
 
@@ -83,7 +85,7 @@ class TemperatureWidget extends StatelessWidget {
             children: [
               icon,
               SizedBox(width: 16),
-              Expanded( // Este widget garante que o texto se ajuste
+              Expanded(
                 child: Text(
                   'Informações de Saúde',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -91,9 +93,15 @@ class TemperatureWidget extends StatelessWidget {
               ),
             ],
           ),
-          content: Text(
-            message,
-            style: TextStyle(fontSize: 18),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                message,
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(height: 8),
+            ],
           ),
           actions: [
             ElevatedButton(
